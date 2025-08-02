@@ -1,0 +1,18 @@
+# Allow direct access to uploaded files
+Options +Indexes
+
+# Set proper MIME types for downloads
+<FilesMatch "\.(pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar|txt|jpg|jpeg|png|gif|svg|mp4|mp3)$">
+    Header set Content-Disposition "attachment"
+</FilesMatch>
+
+# Allow CORS for file downloads
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+
+# Prevent execution of uploaded files
+<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|sh|cgi)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch> 

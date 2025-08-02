@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helmet Test</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/react-helmet-async@2.0.4/dist/react-helmet-async.umd.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { Helmet, HelmetProvider } = ReactHelmetAsync;
+        
+        function TestComponent() {
+            return (
+                <div>
+                    <Helmet>
+                        <title>Test Title</title>
+                        <meta name="description" content="Test description" />
+                    </Helmet>
+                    <h1>Helmet Test Component</h1>
+                    <p>Check the page title and meta description</p>
+                </div>
+            );
+        }
+        
+        function App() {
+            return (
+                <HelmetProvider>
+                    <TestComponent />
+                </HelmetProvider>
+            );
+        }
+        
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html> 

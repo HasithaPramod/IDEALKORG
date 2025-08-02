@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDEALK - CSP Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>IDEALK - CSP and Firebase Test</h1>
+    
+    <div class="test-section">
+        <h2>🔧 CSP Status</h2>
+        <div id="csp-status" class="status warning">Checking CSP headers...</div>
+        <button onclick="checkCSP()">Check CSP Headers</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔥 Firebase Connection Test</h2>
+        <div id="firebase-status" class="status warning">Testing Firebase connection...</div>
+        <button onclick="testFirebase()">Test Firebase</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>🌐 Network Connectivity</h2>
+        <div id="network-status" class="status warning">Testing network connections...</div>
+        <button onclick="testNetwork()">Test Network</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>📋 Test Results</h2>
+        <div id="results"></div>
+    </div>
+
+    <script>
+        // Test CSP headers
+        function checkCSP() {
+            const statusDiv = document.getElementById('csp-status');
+            const resultsDiv = document.getElementById('results');
+            
+            try {
+                // Try to detect CSP violations
+                const testScript = document.createElement('script');
+                testScript.textContent = 'console.log("CSP test");';
+                document.head.appendChild(testScript);
+                
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✅ CSP headers are not blocking inline scripts';
+                
+                resultsDiv.innerHTML += '<p>✅ CSP Test: Passed</p>';
+                
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ CSP headers are blocking scripts: ' + error.message;
+                resultsDiv.innerHTML += '<p>❌ CSP Test: Failed - ' + error.message + '</p>';
+            }
+        }
+        
+        // Test Firebase connection
+        function testFirebase() {
+            const statusDiv = document.getElementById('firebase-status');
+            const resultsDiv = document.getElementById('results');
+            
+            // Test Firebase domains
+            const firebaseDomains = [
+                'https://firebase.googleapis.com',
+                'https://securetoken.googleapis.com',
+                'https://apis.google.com',
+                'https://www.googleapis.com'
+            ];
+            
+            let successCount = 0;
+            let totalTests = firebaseDomains.length;
+            
+            firebaseDomains.forEach(domain => {
+                fetch(domain, { method: 'HEAD', mode: 'no-cors' })
+                    .then(() => {
+                        successCount++;
+                        if (successCount === totalTests) {
+                            statusDiv.className = 'status success';
+                            statusDiv.textContent = '✅ All Firebase domains are accessible';
+                            resultsDiv.innerHTML += '<p>✅ Firebase Test: All domains accessible</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Failed to connect to:', domain, error);
+                        if (successCount === 0) {
+                            statusDiv.className = 'status error';
+                            statusDiv.textContent = '❌ Firebase domains are blocked by CSP';
+                            resultsDiv.innerHTML += '<p>❌ Firebase Test: Domains blocked by CSP</p>';
+                        }
+                    });
+            });
+        }
+        
+        // Test network connectivity
+        function testNetwork() {
+            const statusDiv = document.getElementById('network-status');
+            const resultsDiv = document.getElementById('results');
+            
+            // Test basic connectivity
+            fetch('https://httpbin.org/get')
+                .then(response => {
+                    if (response.ok) {
+                        statusDiv.className = 'status success';
+                        statusDiv.textContent = '✅ Network connectivity is working';
+                        resultsDiv.innerHTML += '<p>✅ Network Test: Basic connectivity OK</p>';
+                    } else {
+                        throw new Error('HTTP ' + response.status);
+                    }
+                })
+                .catch(error => {
+                    statusDiv.className = 'status error';
+                    statusDiv.textContent = '❌ Network connectivity issues: ' + error.message;
+                    resultsDiv.innerHTML += '<p>❌ Network Test: Failed - ' + error.message + '</p>';
+                });
+        }
+        
+        // Run initial tests
+        window.addEventListener('load', () => {
+            setTimeout(checkCSP, 1000);
+            setTimeout(testFirebase, 2000);
+            setTimeout(testNetwork, 3000);
+        });
+    </script>
+</body>
+</html> 

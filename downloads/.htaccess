@@ -1,0 +1,12 @@
+# Allow direct access to files
+Options +Indexes
+
+# Set proper MIME types for downloads
+<FilesMatch "\.(pdf|doc|docx|xls|xlsx|ppt|pptx|zip|rar|txt)$">
+    Header set Content-Disposition "attachment"
+</FilesMatch>
+
+# Allow CORS for file downloads
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization" 
